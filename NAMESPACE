@@ -1,0 +1,28 @@
+exportPattern("^[^\\.]")
+
+importClassesFrom(Brobdingnag, "brob")
+importMethodsFrom(Brobdingnag, "[")
+importMethodsFrom(Brobdingnag, "sum")
+importFrom(Brobdingnag, as.brob)
+
+importFrom(partitions,parts)
+importFrom(partitions,blockparts)
+importFrom(polynom,polynomial)
+importFrom(polynom,as.polynomial)
+
+S3method("+",count)
+S3method("+",census)
+
+S3method("plot",count)
+S3method("plot",census)
+S3method("plot",preston)
+
+S3method("print",preston)
+S3method("print",summary.count)
+
+S3method("summary",census)
+S3method("summary",count)
+
+importFrom("grDevices", "rgb")
+importFrom("graphics", "barplot", "hist", "plot", "plot.default", "points")
+importFrom("stats", "coef", "integrate", "optim", "optimize", "quantile", "rpois", "runif", "uniroot")

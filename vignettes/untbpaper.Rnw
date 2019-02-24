@@ -1,0 +1,829 @@
+\documentclass[nojss]{jss}
+\usepackage{amssymb}
+\usepackage{latexsym}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% declarations for jss.cls %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newcommand{\jm}{J_{\!\mbox{\tiny{$M$}}}}
+
+%% just as usual
+\author{Robin K. S. Hankin\\Auckland University of Technology}
+\Plainauthor{Robin K. S. Hankin}
+\title{Introducing \pkg{untb}, an \proglang{R} Package For Simulating
+  Ecological Drift Under the Unified Neutral Theory of Biodiversity}
+\Plaintitle{Introducing untb, an R Package For Simulating Ecological Drift
+  Under the Unified Neutral Theory of Biodiversity}
+\Shorttitle{Ecological Drift With \proglang{R}}
+%\VignetteIndexEntry{A vignette for the untb package}
+
+\Abstract{
+  The distribution of abundance amongst species with similar ways of
+  life is a classical problem in ecology.
+
+  The {\em unified neutral theory of biodiversity}, due to Hubbell,
+  states that observed population dynamics may be explained on the
+  assumption of per capita equivalence amongst individuals.  One can
+  thus dispense with differences between species, and differences
+  between abundant and rare species: all individuals behave alike in
+  respect of their probabilities of reproducing and death.
+
+  It is a striking fact that such a parsimonious theory results in a
+  non-trivial dominance-diversity curve (that is, the simultaneous
+  existence of both abundant and rare species) and even more striking
+  that the theory predicts abundance curves that match observations
+  across a wide range of ecologies.
+
+  Here I introduce the \pkg{untb} package of \proglang{R}
+  routines, for numerical simulation of ecological drift under the
+  unified neutral theory.  A range of visualization, analytical, and
+  simulation tools are provided in the package and these are presented
+  with examples in the paper.
+  
+  This vignette is based on~\cite{hankin2007a}.  For reasons of
+  performance, some of the more computationally expensive results are
+  pre-loaded.  To calculate them from scratch, change
+  ``\code{calc\_from\_scratch <- TRUE}'' to ``\code{calc\_from\_scratch <-
+    FALSE}'' in chunk \code{time\_saver}.
+}
+
+\Keywords{unified neutral theory, neutral theory, biodiversity, island
+  biogeography}
+\Plainkeywords{unified neutral theory, neutral theory, biodiversity, island
+  biogeography}
+
+%% publication information
+%% NOTE: Typically, this can be left commented and will be filled out by the technical editor
+%% \Volume{13}
+%% \Issue{9}
+%% \Month{September}
+%% \Year{2004}
+%% \Submitdate{2004-09-29}
+%% \Acceptdate{2004-09-29}
+
+%% The address of (at least) one author should be given
+%% in the following format:
+\Address{
+  Robin K. S. Hankin\\
+  Auckland University of Technology\\
+  AUT Tower\\
+  Wakefield Street\\
+  Auckland, New Zealand\\
+  E-mail: \email{hankin.robin@gmail.com}\\
+}
+%% It is also possible to add a telephone and fax number
+%% before the e-mail in the following format:
+%% Telephone: +43/1/31336-5053
+%% Fax: +43/1/31336-734
+
+%% for those who use Sweave please include the following line (with % symbols):
+%% need no \usepackage{Sweave.sty}
+
+%% end of declarations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\SweaveOpts{echo=FALSE}
+\begin{document}
+
+<<overalloptions,echo=FALSE,print=FALSE>>=
+<<results=hide>>=
+require("untb",quietly=TRUE)
+@ 
+
+<<time_saver,echo=FALSE,print=FALSE>>=
+calc_from_scratch <- FALSE
+@ 
+
+<<generate_rn,echo=FALSE,print=FALSE,cache=TRUE>>=
+if(calc_from_scratch){
+  set.seed(0)
+  rn <- rand.neutral(5e6, theta=50)
+} else {
+  load("rn.Rdata")
+}
+@ 
+
+
+\section{Island biogeography and biodiversity}
+
+In the field of ecological dynamics, one simple system of interest is
+that of similar species, at the same trophic level, that compete for
+the same or similar resources.  One might choose forest ecology as the
+canonical example: trees are long-lived, stationary, and easily
+identified.  Determining the statistical properties of such systems is
+a classical problem in ecology~\citep{bell2000}; the observed range of
+abundances between apparently similar species does not have a ready
+explanation.
+
+Many studies involve the tabulation of individuals, collected
+according to some formal sampling method, and it is a universal
+finding that the species abundances exhibit a large range: the
+majority of individuals are accounted for by a relatively small number
+of species, while the rarest species typically are sufficiently rare
+to have been sampled only once (`singletons').
+
+\subsection{The unified neutral theory of biodiversity}
+
+One natural null hypothesis which arises in this field is that
+differences between species may be ascribed to random,
+species-independent, processes.  The origin of such ideas may be
+traced back to at least the 1960s, in which \citet{macarthur1963}
+discussed the observation that island faunas tend to become
+progressively impoverished with distance from the nearest landmass.
+Their insight was to treat the number of species on an island as the
+{\em independent} variable.  \cite{hubbell2001} considers that
+\citeauthor{macarthur1963}'s theory raised the possibility that
+``chance {\em alone} could play a \ldots role in structuring
+ecological communities'' (my italics), thus paving the way for later,
+more explicitly stochastic, theories.
+
+In the context of theoretical studies, and in particular the
+\pkg{untb} package, it is standard practice to consider a
+metacommunity of fixed size~$\jm=\sum_{i=1}^S n_i$ individuals where the
+abundance of the $i^\mathrm{th}$ species, $1\leqslant i\leqslant S$,
+is~$n_i$.  The evolution of the community is then modelled as a Markov
+chain with one state change corresponding to the death of a single
+individual, and the simultaneous birth of another individual of the
+same or a different species.  Because the community size is fixed, it
+is common to refer to an individual being associated with a ``site'',
+thus notionally carving the ecosystem resource into discrete units.
+
+The transition matrix may thus be described,
+following~\citet{macarthur1963,macarthur1967}, in terms of the
+behaviour of the~$i^\mathrm{th}$ species:
+
+\begin{equation}\label{neutral.markoff.chain}
+n_i(t+1)=
+\left\{
+\begin{array}{ll}
+n_i(t) -1    &\mbox{with probability~$p_{-1}$}\\
+n_i(t)       &\mbox{with probability~$p_{0}$}\\
+n_i(t) +1    &\mbox{with probability~$p_{+1}$.}\\
+\end{array}\right.
+\end{equation}
+
+The three probabilities~$\left(p_{-1},p_0,p_{+1}\right)$ may be
+functions of the species~$i$, and the abundances~$n_i$ of each species
+present.  A theory is {\em species neutral} if it assumes that the
+probabilities are independent of~$i$.  Thus, in a species neutral
+theory, all species are equivalent.  Note that this model does not
+preclude abundant species being at a competitive
+disadvantage\footnote{One mechanism might be increased incidence of
+  parasitism among an abundant species; or a rare species might enjoy
+  the competitive advantage of dispensing with territoriality.} or
+advantage\footnote{For example, an abundant species might gain a
+  competitive advantage from cooperative behaviour such as swarming;
+  or, conversely, a rare species might suffer a competitive
+  disadvantage due to the difficulty of finding a mate.}.
+
+A theory is {\em neutral} (sometimes {\em unified neutral}) if it
+assumes that all individuals in a community are ``strictly equivalent
+regarding their prospects of reproduction and
+death''~\citep{chave2005}; a neutral theory is thus species neutral.
+One consequence of this assumption is that both~$p_B(i)$ and~$p_D(i)$,
+the probabilities of a birth and death respectively being an
+individual of species~$i$, are both proportional to~$n_i$, the number
+of individuals of that species present in the ecosystem.  Then we
+have~$p_D(i)=p_B(i)$ for all~$i$, and hence~$p_{-1}=p_{+1}$.  Thus the
+number of individuals of species~$i$---and hence that of all
+species---is a Martingale.
+
+\cite{hubbell2001,hubbell1979} discusses, motivates, and assesses the
+unified neutral theory of biodiversity (henceforth UNTB) and shows
+that it makes a wide variety of quantitative predictions, all of which
+appear to be statistically consistent with predictions---or to be
+incorrect by only a small margin, as discussed by~\cite{volkov2003},
+for example.  
+
+The neutral theory also provides a useful null model against which to
+compare temporal data: \cite{leigh1993}, for example, use neutral
+dynamics in this way and found evidence that tree diversity on newly
+isolated tropical islands declines faster than expected by neutral
+models, suggesting that the discrepancy may be explained by
+non-neutral animal-plant interactions.
+
+More recent work adduces subtle analyses that cast doubt on the
+verisimilitude of the UNTB.  For example, \citet{nee2005} shows that
+the UNTB implies that the expected age of common lineages (of trees,
+in his example) is ``impossibly old''; \citet{mcgill2006} present a
+hierarchy of increasingly demanding statistical tests of the UNTB and
+finds it lacking at the highest levels.
+
+Nevertheless, the UNTB furnishes a broadly realistic mechanism for
+reproduction and speciation~\citep{maurer2004}; it makes predictions
+that are closer to field observations than one might expect for so
+parsimonious a theory.
+
+\cite{mcgill2006}, after rejecting the UNTB in favour of a
+non-mechanistic alternative\footnote{The lognormal
+  distribution~\citep{volkov2003}}, state that the UNTB remains ``an
+  extraordinary and perhaps uniquely elegant ecological theory.  Such
+  elegance is indicative that the neutral theory will have some
+  important role in ecology''.  Similarly, \cite{nee2005} states that
+  the UNTB can still provide ``useful null models for the
+  interpretation of data''.  It is in this spirit that I present
+  \pkg{untb}, an \proglang{R}~\citep{rcore2007} package that uses the
+  UNTB to simulate and analyze such datasets. The theory is then
+  applied to a number of oceanographic datasets.
+
+In the context of computer simulations, it is possible to simulate
+neutral ecological drift by the following algorithm.  Consider an
+system of~$\jm$ individuals, and a timestep sufficiently short for
+only a single individual to die.  Then: \label{intro}
+
+\begin{enumerate}
+\item Choose a site at random; the individual at this site dies.
+\item With probability~$1-\nu$, an individual of species chosen at
+  random from the remaining population is born
+\item With probability~$\nu$, an individual of a new species is born.
+\end{enumerate}
+
+Subsequent timesteps may be enacted using the new community as a pool
+in step~2.  The meaning of ``new'' species is subject to differing
+interpretations: the new species might be the result of a point
+mutation, or in the case of island biogeography, the successful
+immigration of an individual from a metacommunity (typically the
+mainland).
+
+This system is not the only way to simulate neutral ecological drift:
+it ignores, for example, changes in competitive advantage accruing to
+older individuals.  Also, alternative models of speciation may be
+adopted, such as the random fission
+model~\citep{ricklefs2003,hubbell2003}.
+
+\subsection[Computational population ecology and the untb
+package]{Computational population ecology and the \pkg{untb} package}
+
+The \proglang{R} package \pkg{untb} associated with this paper may be
+used to analyze ecosystem data in the context of Hubbell's neutral
+theory.  The package contains routines that summarize census data,
+estimate biodiversity parameters, and generate synthetic datasets
+under conditions of exact neutrality.  In an \proglang{R} session,
+typing {\tt library(help = "untb")} at the command line shows a list
+of topics that are documented in the package.
+
+It is envisaged that the untb package will be useful to ecologists in
+both research and teaching.  Many of the routines are intended to be
+useful to teachers covering the neutral theory: a number of
+visualization tools are included that display census datasets in a
+consistent and standardized format; function \code{display.untb()}
+displays a ``movie'' of a system undergoing neutral drift in a
+visually striking, and hopefully memorable, manner.
+
+Researchers will find useful functionality in the package, which can
+perform a range of relevant analyses on real data.  It is hoped that
+the package will avoid other workers having to `reinvent the wheel' by
+virtue of having all of these features together in a unified, clearly
+described framework implemented in an open-source software
+environment.
+
+\section[Package untb in use]{Package \pkg{untb} in use}
+
+\subsection{Analysis of species abundance data}
+
+Consider the \code{saunders} dataset, which lists species abundances
+of various types of marine animals living in kelp
+holdfasts~\citep{saunders2007,anderson2005}.  The dataset may be
+examined using the functionality of \pkg{untb}:
+
+<<SaundersSummary,echo=TRUE,print=FALSE>>=
+data("saunders")
+summary(saunders.tot)
+@ 
+
+Thus the \code{saunders.tot} dataset
+comprises~\Sexpr{no.of.ind(saunders.tot)} individuals
+of~\Sexpr{no.of.spp(saunders.tot)} species, of
+which~\Sexpr{no.of.singletons(saunders.tot)} are
+``singletons''---that is, species sufficiently rare that they have
+only one representative in the entire sample.  Further details of the
+data are given by function \code{preston()}, which carries out the
+analysis of~\cite{preston1948}:
+
+<<prestonSaunders, echo=TRUE,print=TRUE>>=
+preston(saunders.tot,n=9)
+@ 
+
+<<prestonSaundersTemp, echo=FALSE,print=FALSE>>=
+jj.preston <- preston(saunders.tot)
+jj.summary <- summary(saunders.tot)
+@ 
+
+Thus there are~\Sexpr{jj.preston[1]} species with abundance 1 (that
+is, singletons); \Sexpr{jj.preston[2]} species with abundance~2;
+\Sexpr{jj.preston[3]} species with abundance 3-4;
+\Sexpr{jj.preston[4]} species with abundance~5-8, and so on.
+
+A more graphical representation of the same dataset is given in
+figure~\ref{ranked.abundance.curve}, which shows the ranked abundance
+of each species in red on the logarithmic vertical axis.  The highest
+red dot thus corresponds to \Sexpr{jj.summary[[5]]} with
+\Sexpr{jj.summary[[4]]} individuals.  On this figure, grey lines show
+synthetic datasets generated using the maximum likelihood estimate
+for~$\theta$ (section~\ref{parameter.estimation}).
+
+<<calculate_uncertainty_Saunders,print=FALSE,echo=FALSE,cache=TRUE>>=
+n <- 10
+J <- no.of.ind(saunders.tot)
+unc <- list()
+theta_hat <- optimal.theta(saunders.tot)
+for(i in 1:n){
+  unc[[i]] <- rand.neutral(J=J, theta=theta_hat)
+}
+@ 
+
+
+\begin{figure}[htbp]
+  \begin{center}
+<<plotSaunders,fig=TRUE>>=
+plot(saunders.tot,uncertainty=FALSE)
+for(i in 1:n){
+  points(seq_along(unc[[i]]),unc[[i]],type="l",col="grey")
+}
+@
+\caption{The\label{ranked.abundance.curve} ranked abundance curve of
+  the Saunders dataset showing real data (red) and~10 simulated ranked
+  abundance curves, generated randomly using \code{rand.neutral()}
+  using the maximum likelihood estimate for $\theta$ (grey)}
+  \end{center}
+\end{figure}
+
+\subsection{Estimation of parameters}
+\label{parameter.estimation} 
+
+One distinguishing feature of Hubbell's unified neutral theory is that
+it provides a mechanism for speciation: the algorithm shown in
+section~\ref{intro} specifies that a birth of an individual will be a
+new species with probability~$\nu$.  Although~$\nu$ is small and $\jm$
+large, \citeauthor{hubbell2001} (\citeyear[page 116]{hubbell2001})
+observes that their product is a `moderately sized number'.  The
+Fundamental Biodiversity parameter~$\theta$, defined as
+$\theta=2\jm\nu$, arises naturally when investigating neutral ecological
+drift and in the present context may be regarded as a parameter
+susceptible to statistical inference.  If~$\phi_a$ is the number of
+species with abundance~$a$, the ``Ewens sampling formula''
+\citep{ewens1972} gives the probability of observing a 
+particular species abundance distribution (SAD) as
+\begin{equation}\label{hubbellpage122}
+\mathrm{Pr}\left\{S, n_1,n_2,\ldots,n_S|\theta\right\}=
+\frac{\jm!\theta^S}{1^{\phi_1}2^{\phi_2}\cdots\jm^{\phi_{\jm}}\,
+\phi_1!\phi_2!\cdots\phi_{\jm}!\,
+\prod_{k=1}^{\jm}\left(\theta+k-1\right)}
+\end{equation}
+[\code{theta.prob()} in the package] from which it is clear that the
+number of species~$S$ occurring in a fixed sample size of~$\jm$
+individuals is a sufficient statistic for~$\theta$, and optimizing the 
+likelihood~$\mathcal{L}$ given as
+\begin{equation}
+\mathcal{L}=\frac{\theta^S}{\prod_{k=1}^{\jm}\theta+k-1}
+\end{equation}
+[\code{theta.likelihood()} in the package] over positive values
+thus furnishes a maximum likelihood estimate for~$\theta$.  Function
+\code{optimal.theta()} carries out this procedure numerically:
+
+<<optimalThetaSaunders,echo=TRUE,print=TRUE>>=
+optimal.theta(saunders.tot)
+@ 
+
+The accuracy of this estimate may be assessed by examining the
+likelihood curve~\citep{alonso2004}; figure~\ref{theta.likelihood}
+shows the support ($\log\mathcal{L}$) for a range of $\theta$.  Using
+an exchange rate of two units of support per degree of freedom
+\citep{edwards1992} suggests that the true value of~$\theta$ lies in
+the range 26-37.
+
+\begin{figure}[htbp]
+  \begin{center}
+<<supportTheta,fig=TRUE>>=
+S <- no.of.spp(saunders.tot)
+J <- no.of.ind(saunders.tot)
+theta <- seq(from=25,to=39,len=55)
+jj <- theta.likelihood(theta=theta,S=S,J=J,give.log=TRUE)
+support <- jj-max(jj)
+plot(theta,support,xlab=paste("Biodiversity parameter",expression(theta)),ylab="support")
+abline(h= -2)
+@
+\caption{The\label{theta.likelihood} support curve for the
+  Saunders dataset as a function of the Fundamental Biodiversity
+  Parameter $\theta$}
+  \end{center}
+\end{figure}
+
+\subsubsection{Estimating the probability of immigration: The Etienne sampling formula}
+
+Neutral theories may allow for the possibility of restricted
+immigration to, for example, islands.  Consider a partially isolated
+ecosystem of~$J$ individuals, and a neutral metacommunity of~$\jm$
+individuals and biodiversity parameter~$\theta$.  In the algorithm
+presented in section~\ref{intro}, reinterpret the birth of a new
+species (an event with probability~$\nu$) as the arrival of an
+organism from the metacommunity.  This probability is conventionally
+labelled~$m$; the probability of mutation on the island is negligible.
+
+It is often of great interest to estimate~$m$; \citet{etienne2005}
+shows that the probability of a given set of abundances~$D$ is just
+equation~\ref{hubbellpage122}, modified by a factor that is a
+complicated function of~$m$, the species abundances, and~$\theta$.
+\citeauthor{etienne2005}'s sampling probability is given by function
+\code{etienne()} in the package, and is maximized by function
+\code{optimal.params()}.
+
+From a numerical perspective, the Etienne sampling formula is
+challenging: the intermediate steps involved in the calculation of
+Etienne's $K(D,A)$ [\code{logkda()} in the package] involve very large
+numbers.  Standard IEEE floating-point arithmetic, being unable to
+represent numbers larger than about~$1.7\times 10^{308}$, restricts
+one to~$J\lesssim 100$.  The \pkg{untb} package circumvents this
+restriction in two ways: one can use either the logarithmic
+representation employed by the \pkg{Brobdingnag}
+package~\citep{hankin2007}; or the \proglang{PARI}/\proglang{GP}
+system~\citep{batut2006}.  These options are controlled by setting a
+flag in function \code{logkda()}; full documentation is given in the
+online help page.
+
+\subsubsection{The Barro Colorado dataset}
+
+The BCI dataset~\citep{condit2005}---a standard resource for
+ecologists~\citep{hubbell2001,etienne2005}--- contains location and
+species identity for all trees of~$\geqslant 10\,{\rm cm}$ diameter at
+breast height on Barro Colorado Island for a number of years.  This
+dataset was used in~\citet{hankin2007a} but is not included in the
+\pkg{untb} package (and therefore not used in this vignette), because
+its licence appears to be inconsistent with the GPL.  Further details
+may be found in the package's online documentation file {\tt bci.Rd}.
+
+\subsubsection{Estimation of parameters from field data}
+
+Some of the difficulties of estimating~$\theta$ and~$m$ from field
+data are shown in Figure~\ref{mle.theta}, which shows three ensembles
+of maximum likelihood estimates for local communities of size
+$J=100,1000,10000$, partially isolated ($m=0.01$) from a metacommunity
+of size~$\jm=5\times 10^{6}$ with~$\theta=50$.  The local communities
+were allowed to evolve for sufficiently many timesteps for the results
+to be unaffected by further
+simulation~\citep{chisholm2004,hubbell2004}.  Note the ensemble behaviour of
+the maximum likelihood estimator:  the
+estimates are severely biased, especially for the smaller sample sizes.  In general,  $\theta$ is
+underestimated, while~$m$ is overestimated.
+Even with the largest local community, $\E(\hat{\theta})=40.9$
+and~$\E(\hat{m})=0.047$, showing under- and over-estimation respectively.
+
+
+
+<<calculate_mle,echo=FALSE,print=FALSE,cache=TRUE>>=
+f <- function(local_size,gens){
+  jj <- isolate(rn,size=local_size)
+  a <- untb(start=jj, prob=0.01, D=local_size, gens=gens, meta=rn)
+  optimal.params(a)
+}
+
+if(calc_from_scratch){
+  x100   <- t(replicate(100,f(100   ,999)))
+  x1000  <- t(replicate(100,f(1000  ,999)))
+  x10000 <- t(replicate(100,f(10000 ,999)))
+} else {
+  load("dat.Rdata")
+  x100   <- dat[,,1]
+  x1000  <- dat[,,2]
+  x10000 <- dat[,,3]
+}
+  
+@ 
+
+
+\begin{figure}[htbp]
+  \begin{center}
+<<estimateMandTheta, fig=TRUE>>=
+plot(x100,log="xy",xlim=c(1,80),ylim=c(0.001,1),col="black",pch=1,
+main=paste("Maximum likelihood estimates of ", expression(m), " and ",expression(theta))
+     )
+points(x1000,col="red",pch=2) 
+points(x10000,col="blue",pch=3) 
+
+points(50,0.01,pch=4,lwd=3,cex=2)
+
+legend( "bottomleft", c("100","1000","10000"),col=c("black","red","blue"), pch=1:3, title="Local community size")
+@
+\caption{Ensemble of~100 maximum\label{mle.theta} likelihood estimates
+  of~$m$ and~$\theta$ for three different sizes of local community.
+  Here, the metacommunity is of size~$\jm=5\times 10^6$, the
+  biodiversity parameter~$\theta$ is~50, and the immigration
+  probability~$m$ is~0.01.  The large diagonal cross corresponds to
+  the true values $(50,0.01)$.  Note the systematic bias present for
+  each~$J$, being most severe for the smallest ($J=100$; black
+  circles)}
+  \end{center}
+\end{figure}
+
+In particular, note that many of the ensembles give rise to estimates
+for~$m$ very close to~$1$.  This represents an incorrect assessment of
+(almost) no dispersal limitation, as in fact~$m=0.01$.  The
+probability of~$\hat{m}$ being greater than, say, 0.95 decreases with
+increasing local community size~$J$ but is definitely appreciable even
+when~$J=10000$.  In cases
+where~$\hat{m}\simeq 1$, inspection of the likelihood surface in
+the~$\left(\theta,m\right)$ plane shows that there is no extremum
+(that is, $\partial{\mathcal L}/\partial\theta=\partial{\mathcal
+  L}/\partial m=0$) anywhere in the half-plane~$m\leqslant 1$.  Such
+cases are challenging for the method of maximum likelihood because the
+numerically determined maximum will fall on the line~$m=1$.
+
+In practice, this means that~$\hat{m}$ being close to 1 is not
+inconsistent with a much smaller value of~$m$ unless~$J\gg 10000$, at
+least for~$\theta\sim 50$.  Such considerations may be relevant to any
+work in which~$\hat{m}\simeq 1$; rather than
+using~$\left(\hat{\theta},\hat{m}\right)$ as a basis for making
+inferences, one might adopt the Bayesian approach and use the
+posterior joint distribution of~$\left(\theta,m\right)$.
+
+\subsection[Exact combinatorial analysis for small $J_M$]{Exact
+  combinatorial analysis for small $\boldmath{J}_{\!\boldmath{M}}$} 
+
+The neutral theory may be used to produce various analytical results,
+but many are tractable only for small~$\jm$; here I determine exact
+expected abundances for~$\jm=20$.  \citeauthor{hubbell2001}
+(\citeyear[page 122]{hubbell2001}) shows that the expected abundance
+of the $i^\mathrm{th}$ most abundant species in a sample is
+\begin{equation}
+\sum_{k=1}^C r_i(k)\mathrm{Pr}\left\{
+\underbrace{S,r_1,\ldots,r_S,0,\ldots ,0}_{\jm}
+\right\}
+\end{equation}
+where~$r_i(k)$ is the abundance of the $i^\mathrm{th}$ species under
+configuration~$k$, and summation extends over partitions of~$\jm$ in the
+sense of~\cite{hankin2006} (\citeauthor{hubbell2001}'s
+``configurations'' are our ``partitions'').  Function
+\code{expected.abundance()} in the package calculates this, as shown
+in Figure~\ref{exp.ab} which plots expected abundance as a function of
+species rank~$R$.  The very small expected abundances for, say,
+$R>10$, are consistent with the overwhelming majority of $\jm=20$,
+$\theta=2$ ecosystems comprising fewer than 11 species (thus giving
+any species with $R>10$ a zero abundance).  As an extreme case, the
+value of about~$10^{-11}$ for~$R=20$ is the probability of the
+ecosystem comprising only singletons.
+
+<<e.lowandhigh,echo=FALSE,cache=TRUE>>=
+n <- 20
+x <- expected.abundance(J=n, theta=3)
+e.low  <- expected.abundance(J=n,theta=4)
+e.high <- expected.abundance(J=n,theta=2)
+@ 
+
+
+\begin{figure}[htbp]
+  \begin{center}
+<<expectedAbundance, fig=TRUE>>=
+plot(x)
+segments(x0=1:n,x1=1:n,y0=e.low,y1=e.high)
+@
+\caption{The\label{exp.ab} expected abundances for the
+  $i^{\mathrm{th}}$ ranked species with $\jm=20$ and~$\theta=3$ for
+  $1\leqslant i\leqslant 20$.  Red dots show exact expected abundances
+  and the vertical black lines show the range
+  if~$2\leqslant\theta\leqslant 4$.}
+  \end{center}
+\end{figure}
+
+The abundance of each ranked species will exhibit variance; it is
+possible to build up a histogram of the abundance of, say, the third
+ranked species by repeatedly generating a neutral ecosystem and
+recording the abundance of the third most abundant species amongst
+the~$\jm$ individuals present.  Figure~\ref{hist.abund} shows such a
+histogram generated, again using~$\jm=20$ and~$\theta=2$.  Note the
+absence of zero abundance: in none of the~1000 replicates did the
+ecosystem comprise only two species (thus rendering the third ranked
+species nonexistent).  Also note the impossibility of it being~7 or
+greater: if the third ranked species had abundance~7, then the first
+and second ranked species would have abundances~$\geqslant 7$, so the
+total number of individuals would exceed~20.
+
+
+<<calculate_thirdRank,echo=FALSE,cache=TRUE>>=
+rank3 <- table(replicate(1000,rand.neutral(J=20,theta=2)[3]))
+@ 
+
+\begin{figure}[htbp]
+\begin{center}
+<<plot_thirdRank, fig=TRUE>>=
+plot(rank3,xlab="abundance of third ranked species",ylab="frequency")
+@ 
+\caption{Abundance of third\label{hist.abund} ranked species of an
+  ecosystem of $\jm=20$ individuals and a biodiversity parameter
+  $\theta=2$: 1000 replicates}
+\end{center}
+\end{figure}
+
+
+\subsection{Creation and analysis of synthetic datasets}
+
+Package \pkg{untb} includes a number of functions that generate
+synthetic datasets in the context of visualization or verification of
+predictions of the neutral theory.  
+
+Function \code{untb()} generates random neutral ecosystems using the
+system specified in equations~\ref{neutral.markoff.chain}.  A sample
+output is shown graphically in Figure~\ref{punctuated.equilibrium},
+which exhibits sudden overturning events during which the dominant
+species suffers a drastic reduction in abundance, to be replaced by a
+different species.  This is a direct numerical verification of the
+neutral theory's prediction of punctuated
+equilibrium~\citep[page~233]{hubbell2001}.
+
+<<calculate_species_table,echo=FALSE,cache=TRUE>>=
+if(calc_from_scratch){
+  set.seed(0);
+  synthetic.spp <- species.table(untb(start=rep(1,60),prob=0.002, gens=40000, keep=TRUE))
+} else {
+  load("synthetic_spp.Rdata")
+}
+@ 
+
+\begin{figure}[htb]
+\begin{center}
+<<matplot_species_table, fig=TRUE>>=
+plot(1:10,xlim=c(0,40000),ylim=c(0,60),type="n",xlab="time (generation)",ylab="abundance")
+"showabundance" <- function(x, ...){
+  jj <- rle(x)
+  x <- cumsum(jj$lengths)
+  y <- jj$values
+  segments(x0=c(1,x),y0=y,x1=c(x,x[length(x)]),y1=y, ...)  #horizontal ones
+  segments(x0=x[-length(x)],y0=y[-1],x1=x[-length(x)],y1=y[-length(y)], ...)  # vertical ones
+}
+showabundance(synthetic.spp[,1],col="black")
+showabundance(synthetic.spp[,2],col="red")
+showabundance(synthetic.spp[,3],col="green")
+showabundance(synthetic.spp[,4],col="blue")
+showabundance(synthetic.spp[,5],col="cyan")
+showabundance(synthetic.spp[,6],col="magenta")
+
+
+if(FALSE){matplot(synthetic.spp,type="l",lty=1,xlab="time (generation)",ylab="abundance")}
+@
+\caption{Synthetic dataset generated using neutral
+  dynamics.\label{punctuated.equilibrium}  Lines show the abundance of
+  each species in time; different colours correspond to different
+  (equivalent) species.  A sudden displacement of the initially
+  monodominant species (black line) with another species (red line) occurs
+  at $t\simeq 17000$; a similar overturning event occurs at around time
+  35000}
+  \end{center}
+\end{figure}
+
+
+<<SampleTenThousand,echo=FALSE,print=FALSE,cache=TRUE>>=
+set.seed(0)
+jj <- isolate(rn,size=10000)
+a <- untb(start=jj, prob=0.01, D=10000, gens=1000, meta=rn)
+if(calc_from_scratch){
+  a.logkda <- logkda(a)
+} else {
+  load("a_logkda.Rdata")
+}
+op <- optimal.params(a,log.kda=a.logkda)
+v.opt <- volkov(no.of.ind(a), op, bins=TRUE)
+v.true <- volkov(no.of.ind(a), c(100,0.01), bins=TRUE)
+@
+
+\begin{figure}[htb]
+\begin{center}
+<<PlotSampleTenThousand,fig=TRUE>>=
+pa <- preston(a,n=12)
+pa.names <- sub(" ", "", names(pa))
+jj <- plot(pa,ylim=c(0,27),axisnames=FALSE,
+ylab="Number of species",xlab="Abundance class")
+axis(1, at=jj, labels=FALSE, lty=0)
+text(jj, par("usr")[3]-0.65, srt=90, cex=0.8, adj=1, labels=pa.names,xpd=TRUE)
+
+points(jj, v.opt[1:12], type="b",col="red",pch=1)
+points(jj, v.true[1:12], type="b",col="blue",pch=4)
+par(xpd=2)
+legend("topright", c("best estimate","true"), pch=c(1,4), col=c("red","blue"), lty=c(1,1))
+@ 
+\caption{Preston plot \label{prestonplotsynthetic} of a synthetic
+  dataset of~$J=10000$ individuals, partially isolated from the
+  metacommunity ($\jm=5\times 10^6$, $\theta=50$; $m=0.01$) and
+  allowed to simulate for~$10^4$ deaths per individual, with grey bars
+  showing the binned abundance classes.  Superimposed lineplots show
+  expected number of species for each abundance class
+  following~\citet{volkov2003}, using estimated (maximum likelihood;
+  $\theta=41.83$, $m=0.06$; red) and true parameters (blue)
+  respectively}
+\end{center}
+\end{figure}
+
+Figure~\ref{prestonplotsynthetic} shows another type of analysis
+performed on a synthetic dataset.  The expected number of species,
+calculated using the methods of~\cite{volkov2003}, are shown
+superimposed on a Preston plot.  Two expectations are given: one
+calculated using the true parameters (blue crosses), and one using
+estimated values (red circles).  The difference between these two
+expectations shows the sensitivity to the assumed values of the
+parameters.  Note that the ordinates of the red curve are (correlated)
+random variables; further work might include using the package to
+assess their covariance.
+
+Function~\code{display.untb()} displays an animation of successive
+iterations of function \code{untb()} using different coloured dots to
+represent the different species; Figure~\ref{display.untb} shows
+stills from this function at various points in time under differing
+values of~$\theta$.  Take the top row, which uses~\mbox{$\theta=0$}.
+Here, species count decreases monotonically\footnote{Hubbell shows
+  that the probability of having just one species tends to 1 as
+  time~$t\longrightarrow\infty$ for~$\theta=0$.  Running the
+  \code{display.untb()} function illustrates just how long it takes to
+  get to a monoculture.}, with only three species remaining
+at~$t=100$.  The other rows show an equilibrium being approached, the
+species richness of which depends on magnitude of $\theta$.  Also note
+the first column, showing the the ecosystem after~$t=20$: the four
+plots are visually indistinguishable, illustrating the difficulty of
+estimating~$\theta$ in ecosystems far from equilibrium (after a
+disturbance, for example).
+
+\begin{figure}[htbp]
+\begin{center}
+<<differentThetas, fig=TRUE,width=5.5,height=7>>=
+set.seed(0)
+f <- function(gens,p){
+  display.untb(start=sample(as.census(untb(start=1:100,gens=gens,D=100,prob=p))),gens=0,main="",cex=1.7, asp=1)
+}
+
+g <- function(u="title", ...){
+  par(srt=0)
+  par(mai=c(0,0,0,0))
+  plot.new()
+  text(0.5,0.5,u,...)
+}
+
+h <- function(u="title", ...){
+  par(mai=c(0,0,0,0))
+  par(srt=90)
+  plot.new()
+  text(0.5,0.5,u, ...)
+}
+
+nf <- layout(matrix(
+                    c(00,01,00,02,00,03,
+                      04,05,00,06,00,07,
+                      00,00,00,00,00,00,
+                      08,09,00,10,00,11,
+                      00,00,00,00,00,00,
+                      12,13,00,14,00,15,
+                      00,00,00,00,00,00,
+                      16,17,00,18,00,19),8,6,byrow=TRUE),
+             c(1,4, 1,4, 1,4),
+             c(1,4, 1,4, 1,4, 1,4),
+             TRUE)
+
+g(expression(t==10))
+g(expression(t==50))
+g(expression(t==100))
+
+h(expression(theta==0))
+f(10,0)
+f(50,0)
+f(100,0)
+h(expression(theta==0.1))
+f(10,0.001)
+f(50,0.001)
+f(100,0.001)
+h(expression(theta==1))
+f(10,0.01)
+f(50,0.01)
+f(100,0.01)
+h(expression(theta==10))
+f(10,0.1)
+f(50,0.1)
+f(100,0.1)
+@
+\caption{Simulated ecosystems of size~$\jm=100$ for varying
+  parameters, \label{display.untb} with each organism represented by a
+  dot, the different colours representing different species; spatial
+  locations are functionally identical.  Initial conditions are a
+  system of maximal diversity (i.e. 100 singletons)}
+  \end{center}
+\end{figure}
+
+\clearpage
+\section{Conclusions}
+
+This paper presents Hubbell's Unified Neutral Theory of Biodiversity %'
+from a computational ecology perspective, and introduces the
+\pkg{untb} package of \proglang{R} routines for numerical simulation
+of neutral ecosystem dynamics, analysis of field data, and
+visualization of real and synthetic datasets.
+
+Examples taken from oceanographic datasets are presented and
+discussed using the package.  A number of synthetic datasets are
+generated and analyzed using the package's simulation functions and %'
+analyzed using the visualization suite.
+
+\section*{Acknowledgements}
+I would like to acknowledge the many stimulating and helpful comments
+made on the \proglang{R}-help list while preparing this paper; and the
+helpful reviews of two anonymous referees which considerably improved
+the clarity of an earlier draft.  The manuscript was prepared with the
+help of the \pkg{weaver} package~\citep{falcon2007}.
+
+\bibliography{untb}
+\end{document}

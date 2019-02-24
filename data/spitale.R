@@ -1,0 +1,22 @@
+spitale <-
+structure(c(4667, 4141, 2507, 640, 421, 361, 286, 275, 268, 173, 
+140, 92, 86, 78, 74, 74, 61, 44, 40, 39, 37, 36, 31, 28, 24, 
+22, 18, 15, 11, 10, 9, 7, 7, 7, 6, 6, 6, 6, 6, 6, 5, 4, 4, 4, 
+4, 4, 4, 4, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 
+1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1), .Dim = 76L, .Dimnames = list(
+    c("ACHNMINU", "CCNEPLeu", "ACHNBIsa", "NAdiGApe", "ACHNLPlp", 
+    "GONEPUMIel", "AMRAPEDI", "ACHNLNdu", "AMRAINAR", "DIATMESO", 
+    "CYLASINU", "ACHNLATE", "NITZDIme", "EUTIMINO", "FRAGCAva", 
+    "ACHNLNln", "ACHNSUAT", "DENTTENU", "REIMSINU", "NAVILUND", 
+    "EUTISOLE", "CYLAMINU", "FRAGARar", "ACHNBIOR", "NITZDIdiss", 
+    "AUSEALPI", "NAVIEXIL", "DIATHYEM", "CYLASILE", "ACHNLNfr", 
+    "FRAGCAgr", "BRACNEOE", "NITZDol", "GONEPROD", "ACHNLAEV", 
+    "NAVILEIS", "ACHNGRIS", "ACHNHELV", "STNESMsm", "EUTIBIbi", 
+    "CANEFONT", "AMRAAEQU", "GOMPVENT", "GONEPARV", "NAVIRYCE", 
+    "AMPHFOGE", "EUTINO2J", "NAndMImi", "CYLAFALA", "EUTITENE", 
+    "FRAGEXIG", "MEDICIco", "ACHNCHLI", "NITZALPI", "PINNBOsc", 
+    "ACHNSTRI", "FRAGPINN", "CYLANALI", "PINNSINI", "NAdiCONT", 
+    "ACHNDAON", "CANESILI", "CANETENU", "EUTIGLAC", "EUTIINCI", 
+    "FRUSVULG", "MEDICIci", "NAchMEDI", "NAndDETE", "NAVIANTO", 
+    "NAVIMImi", "PINNMIST", "NAluSAXO", "CYMBDELI", "BRACBREB", 
+    "TETRRUPE")), class = c("count", "table"))
