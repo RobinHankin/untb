@@ -17,7 +17,7 @@ data(ostracod)
   species.
 }
 \source{
-\url{http://www.soc.soton.ac.uk/}
+Kindly supplied by Southampton Oceanography Centre.
 }
 \examples{
 data(copepod)
