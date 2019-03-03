@@ -671,58 +671,6 @@ if(FALSE){matplot(synthetic.spp,type="l",lty=1,xlab="time (generation)",ylab="ab
 \end{figure}
 
 
-<<SampleTenThousand,echo=FALSE,print=FALSE,cache=TRUE>>=
-set.seed(0)
-jj <- isolate(rn,size=10000)
-a <- untb(start=jj, prob=0.01, D=10000, gens=1000, meta=rn)
-if(calc_from_scratch){
-  a.logkda <- logkda(a)
-} else {
-  load("a_logkda.Rdata")
-}
-op <- optimal.params(a,log.kda=a.logkda)
-v.opt <- volkov(no.of.ind(a), op, bins=TRUE)
-v.true <- volkov(no.of.ind(a), c(100,0.01), bins=TRUE)
-@
-
-\begin{figure}[htb]
-\begin{center}
-<<PlotSampleTenThousand,fig=TRUE>>=
-pa <- preston(a,n=12)
-pa.names <- sub(" ", "", names(pa))
-jj <- plot(pa,ylim=c(0,27),axisnames=FALSE,
-ylab="Number of species",xlab="Abundance class")
-axis(1, at=jj, labels=FALSE, lty=0)
-text(jj, par("usr")[3]-0.65, srt=90, cex=0.8, adj=1, labels=pa.names,xpd=TRUE)
-
-points(jj, v.opt[1:12], type="b",col="red",pch=1)
-points(jj, v.true[1:12], type="b",col="blue",pch=4)
-par(xpd=2)
-legend("topright", c("best estimate","true"), pch=c(1,4), col=c("red","blue"), lty=c(1,1))
-@ 
-\caption{Preston plot \label{prestonplotsynthetic} of a synthetic
-  dataset of~$J=10000$ individuals, partially isolated from the
-  metacommunity ($\jm=5\times 10^6$, $\theta=50$; $m=0.01$) and
-  allowed to simulate for~$10^4$ deaths per individual, with grey bars
-  showing the binned abundance classes.  Superimposed lineplots show
-  expected number of species for each abundance class
-  following~\citet{volkov2003}, using estimated (maximum likelihood;
-  $\theta=41.83$, $m=0.06$; red) and true parameters (blue)
-  respectively}
-\end{center}
-\end{figure}
-
-Figure~\ref{prestonplotsynthetic} shows another type of analysis
-performed on a synthetic dataset.  The expected number of species,
-calculated using the methods of~\cite{volkov2003}, are shown
-superimposed on a Preston plot.  Two expectations are given: one
-calculated using the true parameters (blue crosses), and one using
-estimated values (red circles).  The difference between these two
-expectations shows the sensitivity to the assumed values of the
-parameters.  Note that the ordinates of the red curve are (correlated)
-random variables; further work might include using the package to
-assess their covariance.
-
 Function~\code{display.untb()} displays an animation of successive
 iterations of function \code{untb()} using different coloured dots to
 represent the different species; Figure~\ref{display.untb} shows
