@@ -19,6 +19,6 @@ counts, and the output is coereced to a \code{count} object.
 \author{Robin K. S. Hankin}
 \examples{
 data(saunders)
-plot(extractor(saunders.exposed,1))
+plot(extant(extractor(saunders,1)))
 }
 \keyword{math}

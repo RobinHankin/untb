@@ -83,11 +83,19 @@
     }
 }
 \examples{
-data(saunders)
+data("saunders")
+
+jj <- t(saunders)[-1,]
+jj.exposed <- saunders[,1]
+"saunders.tot" <- count(apply(jj,1,sum))
+"saunders.exposed"   <- jj[, jj.exposed]
+"saunders.sheltered" <- jj[,!jj.exposed]
+"saunders.exposed.tot"   <- count(apply(saunders.exposed,1,sum))
+"saunders.sheltered.tot" <- count(apply(saunders.sheltered,1,sum))
+
+
 plot(saunders.sheltered.tot, uncertainty=TRUE, n=1)
-
 preston(saunders.tot)
-
 optimal.params.sloss(saunders.exposed)
 
 }
