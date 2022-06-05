@@ -73,5 +73,6 @@ preston(butterflies,original=TRUE)
 
 data(copepod)
 preston(copepod)
+plot(preston(copepod))
 }
 \keyword{math}
