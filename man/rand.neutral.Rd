@@ -4,7 +4,7 @@
 \description{
 Given the size of the metacommunity \eqn{J}, and the fundamental
 biodiversity number \eqn{\theta}{theta}, generate an object of class
-\code{count} using a stochcastic mechanism consistent with the
+\code{count} using a stochastic mechanism consistent with the
 neutral theory.
 }
 \usage{

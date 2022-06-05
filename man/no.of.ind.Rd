@@ -33,7 +33,7 @@ extant(x)
   \itemize{
     \item
     Function \code{no.of.spp()} returns the number of species in an
-    ecosystem object, treating exctinct species in line with argument
+    ecosystem object, treating extinct species in line with argument
     \code{include.extinct}
     \item
     Function \code{no.of.ind()} returns the number of individuals

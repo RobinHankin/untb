@@ -17,7 +17,7 @@
     with \code{TRUE} meaning to plot expected abundances, and default \code{FALSE}
     meaning not to plot them.  \strong{Warning} this option takes a
     loooong time to run, even for moderate values of \eqn{J}}
-  \item{theta}{Fundamenal biodiversity number used if argument
+  \item{theta}{Fundamental biodiversity number used if argument
     \code{uncertainty} or \code{expectation} are \code{TRUE}.  Default
     value of \code{NULL} means to use the maximum likelihood estimate
     returned by function \code{optimal.theta()}}    
