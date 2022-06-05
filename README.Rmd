@@ -1,0 +1,86 @@
+---
+title: "The unified neutral theory of biodiversity: the untb package"
+output:
+  github_document:
+    pandoc_args: --webtex
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+<img src="man/figures/untb.png" width = "150" align="right" />
+
+<!-- badges: start -->
+
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/untb)](https://cran.r-project.org/package=untb)
+<!-- badges: end -->
+
+
+The `untb` package provides R-centric functionality for working with
+Hubbell's unified neutral theory of biogeography and biodiversity.  A
+vignette is provided in the package.  The canonical reference is
+S. P. Hubbell 2001. "The Unified Neutral Theory of Biodiversity and
+Biogeography", Princeton University Press.
+
+# Installation
+
+You can install the released version of the `untb` package from
+[CRAN](https://CRAN.R-project.org) with:
+
+```{r, message=FALSE}
+# install.packages("untb")  # uncomment this to install the package
+library("untb")
+set.seed(0)
+```
+
+# The `untb` package in use
+
+The package has two main classes, `count` and `census`.  A `count`
+object is a named integer vector, with names being species and entries
+being respective counts.  Thus:
+
+```{r cliff1}
+x <- count(c(cats=9,pigs=3,dogs=2,rats=1,hogs=1,bats=1))
+x
+summary(x)
+```
+
+Above, we see 9 cats, 3 pigs, and so on.  Function `summary()` gives
+further information.  A `census` object is an unordered factor with
+entries being the species of each individual:
+
+```{r}
+as.census(x)
+```
+
+The package includes example datasets:
+
+```{r}
+data(sahfos)
+summary(sahfos)
+```
+
+We can give a visual summary of a dataset in two ways:
+
+```{r}
+plot(sahfos)
+plot(preston(sahfos))
+```
+
+The package also includes the ability to generate random neutral
+assemblages:
+
+```{r}
+summary(rand.neutral(1000,10))
+summary(rand.neutral(1000,10))
+```
+
+
