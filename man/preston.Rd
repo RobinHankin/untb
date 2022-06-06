@@ -30,7 +30,7 @@ number of species 10 5    7    5     1      5      4       0
 }
 
 This shows that there are 10 species with abundance 1 (that is,
-singletons); 5 species with abundance 2; 7 species with abudance 3-4; 5
+singletons); 5 species with abundance 2; 7 species with abundance 3-4; 5
 species with abundance 5-8, and so on.  This method is used by Hubbell
 (2001), and Chisholm and Burgman (2004).
 
@@ -73,5 +73,6 @@ preston(butterflies,original=TRUE)
 
 data(copepod)
 preston(copepod)
+plot(preston(copepod))
 }
 \keyword{math}

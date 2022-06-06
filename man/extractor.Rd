@@ -14,7 +14,7 @@ extractor(x, index)
 }
 \details{
 If \code{index} is length one, the numbers are interpreted as species
-counts, and the output is coereced to a \code{count} object.
+counts, and the output is coerced to a \code{count} object.
 }
 \author{Robin K. S. Hankin}
 \examples{

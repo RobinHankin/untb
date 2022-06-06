@@ -33,7 +33,7 @@ extant(x)
   \itemize{
     \item
     Function \code{no.of.spp()} returns the number of species in an
-    ecosystem object, treating exctinct species in line with argument
+    ecosystem object, treating extinct species in line with argument
     \code{include.extinct}
     \item
     Function \code{no.of.ind()} returns the number of individuals
@@ -72,17 +72,17 @@ data(butterflies)
 no.of.spp(butterflies)
 no.of.ind(butterflies)
 
-jj1 <- count(c(dogs=7,pigs=3,crabs=1,slugs=1))
-jj2 <- count(c(squid=0,octopus=0,nautilus=0))
-jj3 <- count(c(bugs=3,rats=1,crabs=0,fish=0))
+jj1 <- count(c(dogs=7,pigs=3,crabs=0,slugs=1))
+jj2 <- count(c(squid=0,dogs=3,bugs=0))
+jj3 <- count(c(bugs=3,rats=0,crabs=3,cats=0))
 
 extinct(jj1 + jj2) 
-extinct(jj3)               #cats 'n' fish
-extant(jj3)                #bugs and rats
+extinct(jj3)               #rats and cats
+extant(jj3)                #bugs and crabs
 
 singletons(jj1)
 singletons(jj2)           # empty 
-singletons(jj1 + jj3)     # crabs, rats and slugs
+singletons(jj1 + jj3)     # slugs
 
 }
 \keyword{math}
