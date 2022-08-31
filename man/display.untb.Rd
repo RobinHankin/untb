@@ -3,7 +3,8 @@
 \title{Animation of neutral ecological drift}
 \description{
 Displays an ongoing simulation of neutral ecological drift using nice
-colours and a simple animation technique
+colours and a simple animation technique.  \strong{Does not work as
+  intended in \proglang{RStudio}: use base \proglang{R}}
 }
 \usage{
 display.untb(start, gens=100, prob.of.mutate = 0, cex=3, individually
