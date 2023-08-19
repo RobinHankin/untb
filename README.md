@@ -12,9 +12,8 @@ The unified neutral theory of biodiversity: the untb package
 
 The `untb` package provides R-centric functionality for working with
 Hubbell’s unified neutral theory of biogeography and biodiversity. A
-vignette is provided in the package. The canonical reference is S. P.
-Hubbell 2001. “The Unified Neutral Theory of Biodiversity and
-Biogeography”, Princeton University Press.
+vignette is provided in the package. The canonical reference is Hubbell
+2001; to cite the package in publications please use Hankin 2007.
 
 # Installation
 
@@ -75,13 +74,13 @@ We can give a visual summary of a dataset in two ways:
 plot(sahfos)
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
+<img src="man/figures/README-prestonplotsahfos-1.png" width="100%" />
 
 ``` r
 plot(preston(sahfos))
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-2.png" width="100%" />
+<img src="man/figures/README-prestonplotsahfos-2.png" width="100%" />
 
 The package also includes the ability to generate random neutral
 assemblages:
@@ -100,3 +99,12 @@ summary(rand.neutral(1000,10))
 #> Most abundant species: 4 (117 individuals)
 #> estimated theta:  11.50422
 ```
+
+## References
+
+- S. P. Hubbell 2001. “The Unified Neutral Theory of Biodiversity and
+  Biogeography”, Princeton University Press.
+
+- R. K. S. Hankin, 2007. “Introducing untb, an R package for simulating
+  ecological drift under the unified nuetral theory of biodiversity”,
+  *Journal of Statistical Software* 22(12)

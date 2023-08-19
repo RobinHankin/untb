@@ -23,19 +23,18 @@ knitr::opts_chunk$set(
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/untb)](https://cran.r-project.org/package=untb)
 <!-- badges: end -->
 
-
 The `untb` package provides R-centric functionality for working with
 Hubbell's unified neutral theory of biogeography and biodiversity.  A
 vignette is provided in the package.  The canonical reference is
-S. P. Hubbell 2001. "The Unified Neutral Theory of Biodiversity and
-Biogeography", Princeton University Press.
+Hubbell 2001; to cite the package in publications please use Hankin
+2007.
 
 # Installation
 
 You can install the released version of the `untb` package from
 [CRAN](https://CRAN.R-project.org) with:
 
-```{r, message=FALSE}
+```{r, label=installthepackage,message=FALSE}
 # install.packages("untb")  # uncomment this to install the package
 library("untb")
 set.seed(0)
@@ -57,20 +56,20 @@ Above, we see 9 cats, 3 pigs, and so on.  Function `summary()` gives
 further information.  A `census` object is an unordered factor with
 entries being the species of each individual:
 
-```{r}
+```{r coercetocensus}
 as.census(x)
 ```
 
 The package includes example datasets:
 
-```{r}
+```{r showsummarysahfos}
 data(sahfos)
 summary(sahfos)
 ```
 
 We can give a visual summary of a dataset in two ways:
 
-```{r}
+```{r prestonplotsahfos}
 plot(sahfos)
 plot(preston(sahfos))
 ```
@@ -78,9 +77,16 @@ plot(preston(sahfos))
 The package also includes the ability to generate random neutral
 assemblages:
 
-```{r}
+```{r showrandomassemblage}
 summary(rand.neutral(1000,10))
 summary(rand.neutral(1000,10))
 ```
 
+## References
 
+* S. P. Hubbell 2001. "The Unified Neutral Theory of Biodiversity and
+Biogeography", Princeton University Press.
+
+* R. K. S. Hankin, 2007. "Introducing untb, an R package for
+   simulating ecological drift under the unified nuetral theory of
+   biodiversity", _Journal of Statistical Software_ 22(12)
