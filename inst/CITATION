@@ -1,15 +1,11 @@
 citHeader("To cite in publications use:")
 
-citEntry(entry = "Article",
-	 title = {
-             paste("Introducing untb, an R package for simulating
+bibentry(
+    bibtype = "Article",
+    title = "Introducing untb, an R package for simulating
 	     ecological drift under the unified nuetral theory of
-             biodiversity") 
-	     },
-	 author = personList(
-         person(given = c("Robin","K. S."),
-		family = "Hankin",
-		email="hankin.robin@gmail.com")),
+             biodiversity",
+	 author = person("Robin K. S. Hankin"),
 	 journal = "Journal of Statistical Software",
          year = "2007",
 	 month = "September",
