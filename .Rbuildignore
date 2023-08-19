@@ -1,0 +1,6 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^README\.Rmd
+^\.travis\.yml$
+^inst/untb_stickermaker.R$
+^inst/saunders.R$
