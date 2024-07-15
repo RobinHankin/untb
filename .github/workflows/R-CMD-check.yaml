@@ -48,3 +48,4 @@ jobs:
         with:
           upload-snapshots: true
           build_args: '--compact-vignettes="both" --resave-data'
+          build_args: "c('--compact-vignettes=''both'' ', '--resave-data')"
