@@ -4,3 +4,7 @@
 ^\.travis\.yml$
 ^inst/untb_stickermaker.R$
 ^inst/saunders.R$
+^inst/untb_talk_abstract.txt$
+^.github$
+^.devcontainer$
+^codecov\.yml$
