@@ -1,0 +1,23 @@
+
+The distribution of abundance amongst species with similar ways of
+life is a classical problem in ecology.
+
+The Unified Neutral Theory of Biodiversity (UNTB), due to Hubbell,
+states that observed population dynamics may be explained on the
+assumption of per capita equivalence amongst individuals. One can thus
+dispense with differences between species, and differences between
+abundant and rare species: all individuals behave alike in respect of
+their probabilities of reproducing and death.
+
+It is a striking fact that such a parsimonious theory results in a
+non-trivial dominancediversity curve (that is, the simultaneous
+existence of both abundant and rare species) and even more striking
+that the theory predicts abundance curves that match observations
+across a wide range of ecologies.
+
+The UNTB, being a statistical hypothesis, is well-suited to simulation
+using the R computer language. Here I discuss the untb package for
+numerical simulation of ecological drift under the unified neutral
+theory. A range of visualization, analytical, and simulation tools are
+provided in the package and these are presented with examples and
+discussion.
