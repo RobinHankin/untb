@@ -11,3 +11,6 @@ Description: Hubbell's Unified Neutral Theory of Biodiversity.
 License: GPL
 URL: https://github.com/RobinHankin/untb, https://robinhankin.github.io/untb/
 BugReports: https://github.com/RobinHankin/untb/issues
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
