@@ -1,8 +1,6 @@
 exportPattern("^[^\\.]")
 
-importClassesFrom(Brobdingnag, "brob")
-importMethodsFrom(Brobdingnag, "[")
-importMethodsFrom(Brobdingnag, "sum")
+importFrom(Brobdingnag, "sum")
 importFrom(Brobdingnag, as.brob)
 
 importFrom(partitions,parts)
