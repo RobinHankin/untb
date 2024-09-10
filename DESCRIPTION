@@ -9,5 +9,5 @@ Imports: Brobdingnag (>= 1.1-8), partitions (>= 1.9-14), polynom
 Maintainer: Robin K. S. Hankin <hankin.robin@gmail.com>
 Description: Hubbell's Unified Neutral Theory of Biodiversity.
 License: GPL
-URL: https://github.com/RobinHankin/untb
+URL: https://github.com/RobinHankin/untb, https://robinhankin.github.io/untb/
 BugReports: https://github.com/RobinHankin/untb/issues
