@@ -567,7 +567,7 @@ fishers.alpha <- function(N, S, give=FALSE){
     if(specabund[1,i] == n){
       for(k0 in 1:specabund[2,i]){
         lenpolyn2 <- length(polyn) + length(Tnew)-1
-        newpolyn <- rep(NA,lenpolyn2)
+        newpolyn <- rep(0,lenpolyn2)
         if(use.brob){newpolyn <- as.brob(newpolyn)}
         for(k1 in 1:lenpolyn2){
           k2 <- max(1,k1+1-length(Tnew)):min(length(polyn),k1)
