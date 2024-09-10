@@ -55,6 +55,10 @@ is.count(a)
 \seealso{\code{\link{census}}}
 \examples{ 
 
+count(c(
+   slugs = 9, pigs = 1, dogs = 1, hogs = 2, bats = 3,
+   cats = 1, frogs = 1, pugs = 2, ants = 1,
+   yaks = 2, rats = 4))
 
 
 a <- c(rep("oak",5) ,rep("ash",2),rep("elm",3),rep("xx",4))
