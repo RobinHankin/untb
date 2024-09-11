@@ -75,7 +75,7 @@
   n2 <- sum(!mutated)
   
   a[died[!mutated]] <- sample(a,n2,replace=TRUE)
-  a[died[mutated]] <- (1:n1) + max(a)
+  if(n1 > 0){ a[died[mutated]] <- seq_len(n1) + max(a) }
   return(a)
 }
 
