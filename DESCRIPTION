@@ -12,5 +12,5 @@ License: GPL
 URL: https://github.com/RobinHankin/untb, https://robinhankin.github.io/untb/
 BugReports: https://github.com/RobinHankin/untb/issues
 Suggests: 
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0), vdiffr
 Config/testthat/edition: 3
