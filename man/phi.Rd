@@ -11,11 +11,11 @@ unphi(freq, string="spp")
 }
 \arguments{
   \item{x}{Ecosystem vector; is coerced to class \code{count}}
-  \item{addnames}{Boolean with default
+  \item{addnames}{Boolean, with default
     \code{TRUE} meaning to set the name of the \eqn{i}th element
-    to the species with abundance \eqn{i} if unique.  Set to
-    \code{FALSE} to suppress this, which is useful if the species names
-    are long}
+    to the species with abundance \eqn{i} if unique.  This can be
+    confusing.  Set to \code{FALSE} to suppress this, which is
+    useful if the species names are long}
   \item{freq}{Frequency data (eg as returned by \code{phi()})}
   \item{string}{Character; species name to prepend (using \code{NULL}
     can be confusing)}
@@ -44,7 +44,7 @@ unphi(freq, string="spp")
 jj <- c(rep("oak",5) ,rep("ash",2),rep("elm",3),"pine","tea","yew")
 a <- as.count(jj)
 
-phi(a)
+phi(a,addnames=FALSE) # three singleton spp, one species with abundance 2, etc
 unphi(phi(a))   #should match 'a' except for species names (which are lost)
 
 data(butterflies)
