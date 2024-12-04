@@ -9,7 +9,7 @@
 \newcommand{\jm}{J_{\!\mbox{\tiny{$M$}}}}
 
 %% just as usual
-\author{Robin K. S. Hankin\\Auckland University of Technology}
+\author{Robin K. S. Hankin\\University of Stirling}
 \Plainauthor{Robin K. S. Hankin}
 \title{Introducing \pkg{untb}, an \proglang{R} Package For Simulating
   Ecological Drift Under the Unified Neutral Theory of Biodiversity}
@@ -66,9 +66,8 @@
 %% in the following format:
 \Address{
   Robin K. S. Hankin\\
-  Auckland University of Technology\\
-  Wakefield Street\\
-  Auckland, New Zealand\\
+  University of Stirling\\
+  Scotland\\
   E-mail: \email{hankin.robin@gmail.com}\\
 }
 %% It is also possible to add a telephone and fax number
