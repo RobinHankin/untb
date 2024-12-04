@@ -42,12 +42,12 @@ optimal.params(D, log.kda = NULL, start = NULL, give = FALSE, ...)
        \frac{I^A}{(I)_J}
        \right)}{omitted...see PDF}
 
-where \eqn{\log K(D,A)} is given by function \code{logkda()} (qv).  It
-might be useful to know the (trivial) identity for the Pochhammer symbol
-[written \eqn{(z)_n}] documented in \code{theta.prob.Rd}.  For
-convenience, Etienne's Function \code{optimal.params()} uses
-\code{optim()} to return the maximum likelihood estimate for
-\eqn{\theta}{theta} and \eqn{m}.
+where \eqn{\log K(D,A)}{log K(D,A)} is given by function \code{logkda()}
+(qv).  It might be useful to know the (trivial) identity for the
+Pochhammer symbol [written \eqn{(z)_n}] documented in
+\code{theta.prob.Rd}.  For convenience, Etienne's Function
+\code{optimal.params()} uses \code{optim()} to return the maximum
+likelihood estimate for \eqn{\theta}{theta} and \eqn{m}.
 
 Compare function \code{optimal.theta()}, which is restricted to no
 dispersal limitation, ie \eqn{m=1}.
