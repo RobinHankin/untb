@@ -794,7 +794,7 @@ fishers.alpha <- function(N, S, give=FALSE){
   count.string <- paste(as.vector(a), collapse = ",")
   pari_string <- paste(pari_string,"print(logKDAvec([", count.string, "]))")
   cat(pari_string, file = "logkda.gp")
-  logkda.list <- shell("gp -q logkda", intern = TRUE)
+  logkda.list <- shell(paste(gp_binary, "-q", "logkda.gp"), intern = TRUE)
   logkda.list <- paste(logkda.list,sep="",collapse="")
   
   if (numerical) {
