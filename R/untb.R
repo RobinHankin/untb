@@ -795,7 +795,14 @@ fishers.alpha <- function(N, S, give=FALSE){
   pari_string <- paste(pari_string,"print(logKDAvec([", count.string, "]))")
   cat(pari_string, file = "logkda.gp")
   logkda.list <- shell(paste(gp_binary, "-q", "logkda.gp"), intern = TRUE)
-  logkda.list <- paste(logkda.list,sep="",collapse="")
+  # Eliminate the last item of the list that contains a prompt
+  if (is.list(logkda.list)) {
+    # pari/gp returned a list
+    logkda.list <- paste(logkda.list[[-length(logkda.list)]], sep = "", collapse = "")
+  } else {
+    # pari/gp returned a character vector
+    logkda.list <- paste(logkda.list[-length(logkda.list)], sep = "", collapse = "")
+  }
   
   if (numerical) {
     logkda.list <- (as.numeric(unlist(strsplit(gsub("\\[|\\]", "", logkda.list), ","))))
