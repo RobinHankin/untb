@@ -808,7 +808,7 @@ fishers.alpha <- function(N, S, give=FALSE){
     logkda.list <- (as.numeric(unlist(strsplit(gsub("\\[|\\]", "", logkda.list), ","))))
   }
   
-  shell("del logkda.gp")
+  file.remove("logkda.gp")
   return(logkda.list)
 }
 
