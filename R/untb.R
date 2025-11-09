@@ -783,13 +783,13 @@ fishers.alpha <- function(N, S, give=FALSE){
  "
 
   if (isTRUE(as.logical(Sys.info()[1] == "Windows"))) {
-    return(logkda_pari_windows(a, numerical, pari_string))
+    return(logkda_pari_windows(a, numerical, pari_string, gp_binary))
   } else {
     return(logkda_pari_unix(a, numerical, pari_string, gp_binary))
   }
 }
 
-"logkda_pari_windows" <- function (a, numerical, pari_string) {
+"logkda_pari_windows" <- function (a, numerical, pari_string, gp_binary) {
   a <- extant(as.count(a))
   count.string <- paste(as.vector(a), collapse = ",")
   pari_string <- paste(pari_string,"print(logKDAvec([", count.string, "]))")
