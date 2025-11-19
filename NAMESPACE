@@ -1,12 +1,11 @@
 exportPattern("^[^\\.]")
 
-importFrom(Brobdingnag, "sum")
-importFrom(Brobdingnag, as.brob)
-
 importFrom(partitions,parts)
 importFrom(partitions,blockparts)
 importFrom(polynom,polynomial)
 importFrom(polynom,as.polynomial)
+
+importFrom(Brobdingnag, as.brob)
 
 S3method("+",count)
 S3method("+",census)
