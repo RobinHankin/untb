@@ -17,7 +17,7 @@ logkda.pari(a, numerical=TRUE, gp_binary = "gp")
 logkda.polyn(a)
 logkda(a, method="pari", ...)
 logkda_pari_unix(a, numerical, pari_string, gp_binary)
-logkda_pari_windows(a, numerical, pari_string)
+logkda_pari_windows(a, numerical, pari_string, gp_binary)
 }
 \arguments{
   \item{a}{Count object}
@@ -30,7 +30,7 @@ logkda_pari_windows(a, numerical, pari_string)
     meaning to return the string produced by \code{pari/gp}}
   \item{method}{In function \code{logkda()}, a string specifying which
     method to use.  Takes \dQuote{R}, \dQuote{a11}, or \dQuote{pari}}
-  \item{pari_string,gp_binary}{configuration variables (not intended to
+  \item{pari_string, gp_binary}{configuration variables (not intended to
     be changed by the user)}
   \item{...}{In function \code{logkda()}, further arguments which are
     passed to the other functions}
@@ -60,10 +60,7 @@ logkda_pari_windows(a, numerical, pari_string)
 Function \code{logkda.pari()} dispatches to either
 \code{logkda_pari_unix()} or \code{logkda_pari_windows()} but the
 windows function is not guaranteed to work.
-
- }
-
-
+}
  
 \references{
 R. S. Etienne 2005. \dQuote{A New Sampling Formula for Neutral
